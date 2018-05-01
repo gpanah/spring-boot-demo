@@ -1,3 +1,6 @@
+//Eclipse enable
+apply plugin: 'eclipse'
+
 //What is it I'm building?
 apply plugin: 'java'
 
