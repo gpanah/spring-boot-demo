@@ -1,20 +1,39 @@
+buildscript {
+   repositories {
+	  maven {
+	    url "$mavenAsc0Url"
+	    credentials {
+	        username "$mavenUser"
+	        password "$mavenAsc0Password"
+	    }
+	  }
+	}
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.1.RELEASE")
+    }
+}
+
 //Eclipse enable
 apply plugin: 'eclipse'
 
 //What is it I'm building?
 apply plugin: 'java'
 
+//What sugar am I adding
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-jar {
+bootJar {
     baseName = 'hello-world'
     version = '0.1.0'
-    manifest {
-       attributes 'Main-Class': "hello.HelloWorld"
-    }	
-    from {
-       configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed"
     }
 }
 
@@ -28,8 +47,14 @@ repositories {
     }
   }
 }
-
+//Thymeleaf is a necessary dependency.  When boot sees thymeleaf, it uses a view resolver
+//that allows items from src/main/resources/templates to be rendered by name.  It
+//also allows the root path to return src/main/resources/static/index.html 
 dependencies {
     compile "joda-time:joda-time:2.2"
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile "org.springframework.boot:spring-boot-starter-thymeleaf"
+    compile "org.springframework.boot:spring-boot-starter-test"
+    compile "org.webjars:jquery:3.2.1"
     testCompile "junit:junit:4.12"
 }
